@@ -1,0 +1,6 @@
+* { box-sizing: border-box; }
+html, body { min-height: 100%; margin: 0; }
+body { font-family: 'DM Sans', sans-serif; background: #111019; color: #eeeaf5; }
+button, input, textarea { font: inherit; }
+button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid #b794ed; outline-offset: 2px; }
+::selection { color: #fff; background: #7045a5; }

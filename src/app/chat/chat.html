@@ -1,0 +1,113 @@
+<div class="app-shell">
+<title>Chat</title>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon"></div>
+      <div>
+        <strong>Ch<span>Arte</span></strong>
+        <small>SEU ESPAÇO DE CONVERSA</small>
+      </div>
+    </div>
+
+    <button class="new-chat" type="button" (click)="startNewChat()">
+      <span class="plus">＋</span> Nova conversa
+    </button>
+
+    <div class="section-label">CONVERSAS</div>
+    <label class="search-box">
+      <span>⌕</span>
+      <input type="search" placeholder="Buscar conversa..." [(ngModel)]="searchTerm">
+    </label>
+
+    <nav class="conversation-list" aria-label="Lista de conversas">
+      @for (conversation of filteredConversations; track conversation.id) {
+        <button
+          class="conversation-item"
+          [class.active]="activeId() === conversation.id"
+          type="button"
+          (click)="selectConversation(conversation.id)">
+          <span class="avatar" [class.blue]="conversation.color === 'blue'">{{ conversation.initials }}</span>
+          <span class="conversation-info">
+            <strong>{{ conversation.name }}</strong>
+            <small>{{ conversation.status }}</small>
+          </span>
+          <span class="online-dot"></span>
+        </button>
+      } @empty {
+        <p class="empty-search">Nenhuma conversa encontrada.</p>
+      }
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="profile-avatar">AJ</div>
+      <div class="profile-info">
+        <strong>Meu perfil</strong>
+        <small>Conectado</small>
+      </div>
+      <span class="profile-menu">•••</span>
+    </div>
+  </aside>
+
+  <main class="chat-panel">
+    <header class="chat-header">
+      <div class="header-person">
+        <span class="avatar large">{{ activeConversation.initials }}</span>
+        <div>
+          <h1>{{ activeConversation.name }}</h1>
+          <p><span class="online-dot"></span> {{ activeConversation.status }}</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span class="header-tag">✦ <span>Chat demonstrativo</span></span>
+        <button class="icon-button" type="button" aria-label="Mais opções">•••</button>
+      </div>
+    </header>
+
+    <section class="message-area" #messageArea>
+      <div class="date-divider"><span>HOJE</span></div>
+
+      @for (message of activeConversation.messages; track message.id) {
+        <article class="message-row" [class.mine]="message.sender === 'user'">
+          @if (message.sender === 'bot') {
+            <span class="message-avatar">C</span>
+          }
+          <div class="message-content">
+            <div class="message-meta">
+              <strong>{{ message.sender === 'user' ? 'Você' : 'Charte' }}</strong>
+              <time>{{ message.time }}</time>
+            </div>
+            <div class="bubble" [class.user-bubble]="message.sender === 'user'">
+              {{ message.text }}
+            </div>
+          </div>
+          @if (message.sender === 'user') {
+            <span class="user-mini-avatar">AJ</span>
+          }
+        </article>
+      }
+
+      @if (isTyping()) {
+        <div class="typing-row">
+          <span class="message-avatar">C</span>
+          <div class="typing-bubble"><i></i><i></i><i></i></div>
+          <small>...</small>
+        </div>
+      }
+    </section>
+
+    <footer class="composer-area">
+      <div class="composer">
+        <textarea
+          rows="1"
+          placeholder="Escreva sua mensagem..."
+          [(ngModel)]="draft"
+          (keydown)="handleKeydown($event)"
+          aria-label="Escreva sua mensagem"></textarea>
+        <button class="send-button" type="button" (click)="sendMessage()" [disabled]="!draft.trim()" aria-label="Enviar mensagem">
+          <span>➤</span>
+        </button>
+      </div>
+      <p class="composer-hint">Pressione <kbd>Enter</kbd> para enviar · <kbd>Shift + Enter</kbd> para quebrar a linha</p>
+    </footer>
+  </main>
+</div>
